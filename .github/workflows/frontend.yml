@@ -25,7 +25,7 @@ jobs:
           docker tag frontend:${{ github.sha }} ghcr.io/jonasbjork/guest2-frontend:latest
 
       - name: Login to GHCR
-        run: docker login --username jonasbjork --password  ${{ Secret.DOCKER_TOKEN }}  ghcr.io
+        run: docker login --username jonasbjork --password  ${{ Secrets.DOCKER_TOKEN }}  ghcr.io
 
       - name: Push the images
         run: |
