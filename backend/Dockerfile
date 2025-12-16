@@ -4,7 +4,7 @@ FROM registry.access.redhat.com/ubi10/go-toolset:10.0 AS builder
 WORKDIR /app
 
 # Copy go mod files first (better caching)
-COPY go.mod go.sum ./
+COPY go.mod ./
 RUN go mod tidy
 
 # Copy source code
