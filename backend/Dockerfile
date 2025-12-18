@@ -1,6 +1,7 @@
 # Using Go lang base image -
 FROM registry.access.redhat.com/ubi10/go-toolset:10.0 AS builder
 
+USER 0
 WORKDIR /app
 
 # Copy go mod files first (better caching)
