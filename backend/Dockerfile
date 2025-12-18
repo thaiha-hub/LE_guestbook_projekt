@@ -1,30 +1,49 @@
-# Using Go lang base image -
+# ==========================================
+# Stage 1: The Builder
+# Uses the Red Hat Go Toolset to compile the app
+# ==========================================
 FROM registry.access.redhat.com/ubi10/go-toolset:10.0 AS builder
 
-USER 0
-WORKDIR /app
+# Set the working directory (standard for UBI images)
+WORKDIR /opt/app-root/src
 
-# Copy go mod files first (better caching)
-COPY go.mod ./
+# Copy all source code to the container
+# We use --chown to ensure the 'default' user in the UBI image owns the files
+COPY --chown=1001:0 . .
+
+# Run the dependencies check as requested
 RUN go mod tidy
 
-# Copy source code
-COPY . .
-
-# Build the binary
+# Build the application
+# We output the binary named 'guestbook-api'
 RUN go build -o guestbook-api .
 
-# ---------- Stage 2: Runtime ----------
+# ==========================================
+# Stage 2: The Runtime
+# Uses the Minimal UBI for a smaller, secure final image
+# ==========================================
 FROM registry.access.redhat.com/ubi10-minimal:10.0
 
+# Set working directory for the runtime
 WORKDIR /app
 
-# Copy the binary from builder
-COPY --from=builder /app/guestbook-api .
+# Copy the compiled binary from the builder stage
+COPY --from=builder /opt/app-root/src/guestbook-api .
 
-# Expose application port
+# Set default Environment Variables
+# These can be overridden by GitHub Actions or Kubernetes later
+ENV PORT=8080 \
+    DB_HOST=localhost \
+    DB_PORT=5432 \
+    DB_USER=guestbook \
+    DB_PASSWORD=password \
+    DB_NAME=guestbook \
+    REDIS_HOST=localhost \
+    REDIS_PORT=6379 \
+    REDIS_PASSWORD=""
+
+# Expose the port the app listens on
 EXPOSE 8080
 
-# Run the application
+# Command to run the application
 CMD ["./guestbook-api"]
-
