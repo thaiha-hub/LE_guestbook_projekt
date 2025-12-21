@@ -9,5 +9,3 @@ COPY nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 8080
 
-# Kör nginx direkt, hoppa över S2I-usage
-ENTRYPOINT ["nginx", "-g", "daemon off;"]
