@@ -10,14 +10,14 @@ FROM registry.access.redhat.com/ubi10/go-toolset:10.0 AS builder
 WORKDIR /opt/app-root/src
 
 # Copy backend source code  to the container (main.go, and go.mod)
-# We use --chown to set the file owner to user 1001, non-root user  and group 0, root group
+#  Change the file owner to user with id 1001_ non-user and group 0, root group for security purposes
 COPY --chown=1001:0 . .
 
-# Run the dependencies check as requested
+# Download the dependencies required by the go.mod file
 RUN go mod tidy
 
 # Build the application
-# We output the binary named 'guestbook-api'
+# Compile the Go code into a single executable binary named guestbook-api
 RUN go build -o guestbook-api .
 
 # Stage 2: The Runtime
