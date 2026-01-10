@@ -1,9 +1,7 @@
-# Backend Containerfile 
-# This builds and runs the guestbook API
+# Dockerfile to build the guestbook API using go-toolset and UBI minimal
 
-# Stage 1: The Builder
-
-# Uses the Red Hat Go Toolset to compile the app
+# Stage 1: Build the Guestbook API Application
+# Uses redhat UBI Go toolset as the compiler.
 FROM registry.access.redhat.com/ubi10/go-toolset:10.0 AS builder
 
 # Set the working dir (standard for UBI Go images)
