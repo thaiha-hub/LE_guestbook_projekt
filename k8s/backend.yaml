@@ -1,3 +1,4 @@
+# backend Deployment configuration
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -15,6 +16,18 @@ spec:
       containers:
         - name: backend
           image: ghcr.io/thaiha-hub/guestbook-backend:latest
+# Add readiness and liveness probes(medical checkups) for backend
+          readinessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            
           envFrom:
             - configMapRef:
                 name: guestbook-config

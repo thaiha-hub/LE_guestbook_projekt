@@ -15,6 +15,17 @@ spec:
       containers:
         - name: redis
           image: quay.io/kurs/redis:latest
+# Add readiness and liveness probes(medical checkups) for Redis
+          readinessProbe:
+            tcpSocket:
+              port: 6379
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 6379
+            initialDelaySeconds: 15
+            periodSeconds: 20
           env:
             - name: REDIS_PASSWORD
               valueFrom:
